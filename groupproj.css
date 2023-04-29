@@ -1,0 +1,44 @@
+body,head{
+    background-color: white;}
+    #navbar{
+            background-color: maroon;
+            text-align: center;
+        }
+    #navbar ul li {
+            display:inline-block;
+            padding:10px;
+        }
+    #navbar a {
+            color: white;
+            text-decoration: none;
+        }
+    #navbar li:hover {
+            background-color:aliceblue; 
+        }
+    #navbar li:hover a{
+            color: black; 
+        }
+
+        .logo{
+            position:absolute;
+            left:0px;
+          }
+          #title{
+            text-align: center;
+          }
+
+          div.polaroid {
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            margin-bottom: 25px;
+          }
+          
+          div.container {
+            text-align: center;
+            padding: 10px 20px;
+          }
+          table, th, td {
+            border:1px solid black;
+            border-collapse: collapse;
+          }
