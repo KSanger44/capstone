@@ -117,13 +117,15 @@
                 $titlevar=$_REQUEST["titlev"];
                 $descvar=$_REQUEST["descv"];
                 $coursevar=$_REQUEST["coursev"];
+                $ProjIDvar=$_REQUEST["projlst"];
+                $checked_arr = $_POST['checkbox'];
             }
             //echo "client:" . $clientvar . " year:" . $yearvar . " title:" . $titlevar . " description:" . $descvar . " course:" . $coursevar
 
             
             //check if client already exists, if not add new client to client table
             if ($clientvar != null AND $yearvar != null AND $titlevar != null AND $descvar != null AND $coursevar != null) {
-                $stmtProj = $conn->prepare("UPDATE Project SET (ProjectName, ProjectDescription, Course, ProjectYear) VALUES (?,?,?,?)");
+                $stmtProj = $conn->prepare("UPDATE Project SET (ProjectName=?, ProjectDescription=?, Course=?, ProjectYear=? WHERE ProjectID=$ProjIDvar)");
                 $stmtProj->bind_param("ssss", $titlevar, $descvar, $coursevar, $yearvar);
                 $stmtProj->execute();
                 $stmtProj->close();
@@ -153,8 +155,39 @@
             $stmtClient3->close();
             }
             
+            //Clear current Keyword associations from ProjectAndKeyword
+            $projectID = isset($_POST['projlst']) ? $_POST['projlst'] : "";
+            $stmtKWdel = $dbConn->prepare("DELETE FROM ProjectAndKeyword WHERE ProjectID = '$projectID'");
+            $stmtKWdel->bind_param("s", $clientvar);
+            $stmtKWdel->execute();
+            $stmtKWdel->close();
+
+            //Loop through array to update to new keywords
+            foreach ($checked_arr as $value) {
+                $stmtKW=$dbConn->prepare("INSERT INTO ProjectAndKeyword(KeywordID, ProjectID) VALUES (?,?)");
+                $stmtKW->bind_param("ss", $value, $projIDrow["ProjectID"]);
+                $stmtKW->execute();
+                $stmtKW->close();
+            }
+            echo "<table>";
+            foreach ($_POST as $key => $value) {
+                echo "<tr>";
+                echo "<td>";
+                echo $key;
+                echo "</td>";
+                echo "<td>";
+                echo $value;
+                echo "</td>";
+                echo "</tr>";
+            }
+            echo "</table>";
             
             } else {
                 echo "Please fill in all Fields";
-            }    
-        ?>    
+            }
+            
+        $userCheck->close();
+        $dbConn->close();         
+        ?>
+        </body>
+        </html>    
