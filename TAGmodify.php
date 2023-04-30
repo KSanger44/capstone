@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +12,7 @@
         <button onclick="window.location.href='home.php'">Home</button>
         <button onclick="window.location.href='view.php'">View</button>
         <button onclick="window.location.href='add.php'">Add</button>
-        <button onclick="window.location.href='TAGmodify.php'">Modify</button>
+        <button onclick="window.location.href='modify.php'">Modify</button>
     </div>
 
     <button id="trb" onclick="window.location.href='logout.html'">Log out</button>
@@ -24,24 +26,33 @@
 
               <!-- PHP code to establish connection with the localserver -->
               <?php
+                  session_start();
+                  ob_start();
+
                   //connect to the db schema
                   $servername = "localhost:3306";
                   $username = "root";
                   $password = '';
                   $dbname = "capstone_database";
-                  //$dbname = "kmkelmo1_capstone_database";
-                  session_start();
 
-                  // Create connection
-                  $conn = new mysqli($servername, $username, $password, $dbname);
                   
+                  $conn = new mysqli($servername, $username, $password, $dbname);
+                  //$userCheck = new mysqli("localhost", "kmkelmo1", "vYV7v[66(kX9lD", "kmkelmo1_CS302_Project_Combined");
+                  //$conn = new mysqli("localhost", "kmkelmo1", "vYV7v[66(kX9lD", "kmkelmo1_capstone_database");
+
+                  $clientvar=$_REQUEST["client"];
+                  $yearvar=$_REQUEST["year"];
+                  $titlevar=$_REQUEST["title"];
+                  $descvar=$_REQUEST["desc"];
+                  $coursevar=$_REQUEST["course"];
+
 
                   // Check connection
                   if ($conn->connect_error) {
                       die("Connection failed: " . $conn->connect_error);
                   }
                       
-                  $sql = "SELECT * FROM project";
+                  $sql = "SELECT * FROM project"; //Add archive filter
                   $result = mysqli_query($conn,$sql);
                   //$row = mysqli_fetch_array($result,MYSQLI_ASSOC);
 
@@ -56,7 +67,7 @@
                 ?>
               </select></div><br>
             
-            Client <input type="text" id="client" name="client"><br>
+           <label>Client</label><input type="text" id="client" name="client"><br>
             Year<input type="number" id="year" name="year"><br>
             Title<input type="text" id="title" name="title"><br>
             Description<input type="text" id="desc" name="desc"><br><br>
@@ -108,10 +119,11 @@
 
           if(isset($_POST['modproj'])){
 
-            $updatesql = "UPDATE PROJECT, CLIENT, PROJECTANDCLIENT
-            SET PROJECT.projectyear = '$year', PROJECT.projectname = '$title', PROJECT.projectdescription = '$desc',
-            Client.ClientName = '$client'
-            WHERE PROJECTANDCLIENT.ProjectID = '$projectID'";
+            $updatesql = "UPDATE PROJECT
+            SET PROJECT.projectyear = '$year', PROJECT.projectname = '$title', PROJECT.projectdescription = '$desc'
+            WHERE PROJECT.ProjectID = '$projectID';
+            UPDATE CLIENT
+            WHERE CLIENT.cient"
 
 
           if (mysqli_query($conn, $updatesql)) {
@@ -121,10 +133,13 @@
           }
           }
 
+
+
+
           if(isset($_POST['deleteproj'])){
             
             $deletesql = "UPDATE PROJECT, CLIENT, PROJECTANDCLIENT
-            SET PROJECT.archive = '1'
+            SET PROJECT.archive = 1
             WHERE PROJECTANDCLIENT.ProjectID = '$projectID'";
 
 
@@ -141,8 +156,8 @@
               if (confirm("Are you sure you want to delete this project?")){
 
               } else {}
-            };
-          </script>
+            }
+          </script>  
 </body>
 
 
