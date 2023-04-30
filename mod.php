@@ -5,10 +5,10 @@
 </head>
 <body>
     <div id="nb">
-        <button onclick="window.location.href='home.html'">Home</button>
-        <button onclick="window.location.href='view.html'">View</button>
-        <button onclick="window.location.href='add.html'">Add</button>
-        <button onclick="window.location.href='modify.html'">Modify</button>
+        <button onclick="window.location.href='NonAdminHP-TAG.php'">Home</button>
+        <button onclick="window.location.href='TAGregularView.php'">View</button>
+        <button onclick="window.location.href='addTAG.php'">Add</button>
+        <button onclick="window.location.href='TAGmodify.php'">Modify</button>
         <button onclick="window.location.href='addStudents.php'">Add Student(s)</button>
     </div>
     <button id="trb" onclick="window.location.href='logout.html'">Log out</button>
@@ -29,9 +29,9 @@
                 $password = '';
                 $dbname = "capstone_database";
 
-                $conn = new mysqli($servername, $username, $password, $dbname);
+                //$conn = new mysqli($servername, $username, $password, $dbname);
 
-                //$conn = new mysqli("localhost", "kmkelmo1", "vYV7v[66(kX9lD", "kmkelmo1_capstone_database");
+                $conn = new mysqli("localhost", "kmkelmo1", "vYV7v[66(kX9lD", "kmkelmo1_capstone_database");
 
                 // Check connection
                     if ($conn->connect_error) {
@@ -127,63 +127,69 @@
 
             //("UPDATE Project SET (ProjectName=?, ProjectDescription=?, Course=?, ProjectYear=? WHERE ProjectID=$ProjIDvar)");
             //check if client already exists, if not add new client to client table
-            if (!empty($titlevar)) {
-                $stmt = $conn->prepare("UPDATE Project SET ProjectName = '".$titlevar."' WHERE ProjectID = '".$ProjIDvar."'");
-                $stmt->execute();
-                }
-            if (!empty($descvar)) {
-                $stmt = $conn->prepare("UPDATE Project SET ProjectDescription = '".$descvar."' WHERE ProjectID = '".$ProjIDvar."'");
-                $stmt->execute();
-                }     
-            if (!empty($coursevar)) {
-                $stmt = $conn->prepare("UPDATE Project SET Course = '".$coursevar."' WHERE ProjectID = '".$ProjIDvar."'");
-                $stmt->execute();
-                }
-            if (!empty($yearvar)) {
-                $stmt = $conn->prepare("UPDATE Project SET ProjectYear = '".$yearvar."' WHERE ProjectID = '".$ProjIDvar."'");
-                $stmt->execute();
-                }        
-            //Get Client Table info
-            $result1 = $conn->query("SELECT ClientName FROM Client WHERE ClientName = '$clientvar'");
-            
-            //if client not found, add to Client table
-            if($result1->num_rows == 0) {
-                $stmtClient = $conn->prepare("INSERT INTO Client(ClientName) VALUES (?)");
-                $stmtClient->bind_param("s", $clientvar);
-                $stmtClient->execute();
-                $stmtClient->close();
+            if(isset($_POST['modproj'])){
+                if (!empty($titlevar)) {
+                    $stmt = $conn->prepare("UPDATE Project SET ProjectName = '".$titlevar."' WHERE ProjectID = '".$ProjIDvar."'");
+                    $stmt->execute();
+                    }
+                if (!empty($descvar)) {
+                    $stmt = $conn->prepare("UPDATE Project SET ProjectDescription = '".$descvar."' WHERE ProjectID = '".$ProjIDvar."'");
+                    $stmt->execute();
+                    }     
+                if (!empty($coursevar)) {
+                    $stmt = $conn->prepare("UPDATE Project SET Course = '".$coursevar."' WHERE ProjectID = '".$ProjIDvar."'");
+                    $stmt->execute();
+                    }
+                if (!empty($yearvar)) {
+                    $stmt = $conn->prepare("UPDATE Project SET ProjectYear = '".$yearvar."' WHERE ProjectID = '".$ProjIDvar."'");
+                    $stmt->execute();
+                    }        
+                //Get Client Table info
+                $result1 = $conn->query("SELECT ClientName FROM Client WHERE ClientName = '$clientvar'");
                 
-                // add the new client/project association    
-                $stmtClient2 = $conn->prepare("INSERT INTO ProjectAndClient(ProjectID, ClientID) VALUES (?,?)");
-                $stmtClient2->bind_param("ss", $ProjIDvar, $clientvar);
-                $stmtClient2->execute();
-                $stmtClient2->close();
-            //else if client already exists, update CLIENT and ProjectAndClient tables    
-            } else {
-            $clientID=$conn->query("SELECT ClientID FROM Client WHERE ClientName = '$clientvar'");
-            $clientIDrow = $clientID->fetch_assoc();
-            $stmtClient3 = $conn->prepare("UPDATE ProjectAndClient SET ProjectID = '".$ProjIDvar."'WHERE ClientID = '".$clientIDrow["ClientID"]."'");
-            //$stmtClient3->bind_param("ss", $projIDrow["ProjectID"], $clientIDrow["ClientID"]);
-            $stmtClient3->execute();
-            $stmtClient3->close();
-            }
-            
-            $checked_arr = $_POST['checkbox'];
-            //Clear current Keyword associations from ProjectAndKeyword
-            $projectID = isset($_POST['projlst']) ? $_POST['projlst'] : "";
-            $stmtKWdel = $conn->prepare("DELETE FROM ProjectAndKeyword WHERE ProjectID = '$projectID'");
-            //$stmtKWdel->bind_param("s", $clientvar);
-            $stmtKWdel->execute();
-            $stmtKWdel->close();
+                //if client not found, add to Client table
+                if($result1->num_rows == 0) {
+                    $stmtClient = $conn->prepare("INSERT INTO Client(ClientName) VALUES (?)");
+                    $stmtClient->bind_param("s", $clientvar);
+                    $stmtClient->execute();
+                    $stmtClient->close();
+                    
+                    // add the new client/project association    
+                    $stmtClient2 = $conn->prepare("INSERT INTO ProjectAndClient(ProjectID, ClientID) VALUES (?,?)");
+                    $stmtClient2->bind_param("ss", $ProjIDvar, $clientvar);
+                    $stmtClient2->execute();
+                    $stmtClient2->close();
+                //else if client already exists, update CLIENT and ProjectAndClient tables    
+                } else {
+                $clientID=$conn->query("SELECT ClientID FROM Client WHERE ClientName = '$clientvar'");
+                $clientIDrow = $clientID->fetch_assoc();
+                $stmtClient3 = $conn->prepare("UPDATE ProjectAndClient SET ProjectID = '".$ProjIDvar."'WHERE ClientID = '".$clientIDrow["ClientID"]."'");
+                //$stmtClient3->bind_param("ss", $projIDrow["ProjectID"], $clientIDrow["ClientID"]);
+                $stmtClient3->execute();
+                $stmtClient3->close();
+                }
+                
+                $checked_arr = $_POST['checkbox'];
+                //Clear current Keyword associations from ProjectAndKeyword
+                $projectID = isset($_POST['projlst']) ? $_POST['projlst'] : "";
+                $stmtKWdel = $conn->prepare("DELETE FROM ProjectAndKeyword WHERE ProjectID = '$projectID'");
+                //$stmtKWdel->bind_param("s", $clientvar);
+                $stmtKWdel->execute();
+                $stmtKWdel->close();
 
-            //Loop through array to update to new keywords
-            foreach ($checked_arr as $value) {
-                $stmtKW=$dbConn->prepare("INSERT INTO ProjectAndKeyword(KeywordID, ProjectID) VALUES (?,?)");
-                $stmtKW->bind_param("ss", $value, $projIDrow["ProjectID"]);
-                $stmtKW->execute();
-                $stmtKW->close();
+                //Loop through array to update to new keywords
+                foreach ($checked_arr as $value) {
+                    $stmtKW=$dbConn->prepare("INSERT INTO ProjectAndKeyword(KeywordID, ProjectID) VALUES (?,?)");
+                    $stmtKW->bind_param("ss", $value, $projIDrow["ProjectID"]);
+                    $stmtKW->execute();
+                    $stmtKW->close();
+                }
             }
-        
+
+            if(isset($_POST['deleteproj'])){
+                $delstmt = $conn->prepare("UPDATE Project SET archive = 1 WHERE ProjectID = '".$ProjIDvar."'");
+                $delstmt->execute(); 
+            }
         $conn->close();         
         ?>
         </body>
