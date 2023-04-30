@@ -117,6 +117,8 @@
           $title = isset($_POST['title']) ? $_POST['title'] : "";
           $desc = isset($_POST['desc']) ? $_POST['desc'] : "";
 
+          $checked_arr = $_POST['checkbox'];  
+
           if(isset($_POST['modproj'])){
             if(($client != null AND $year != null AND $title != null AND $desc != null)){
 
@@ -134,6 +136,8 @@
             } else {
                 echo "Error: " . $updatesql . "<br>" . mysqli_error($conn);
               }
+            } else {
+              echo "Please fill in all Fields";
             }
           }
 
