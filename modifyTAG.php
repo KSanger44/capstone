@@ -24,6 +24,15 @@
                   session_start();
                   ob_start();
 
+                                    //connect to the db schema
+                  $servername = "localhost:3306";
+                  $username = "root";
+                  $password = '';
+                  $dbname = "capstone_database";
+
+                  
+                  $conn = new mysqli($servername, $username, $password, $dbname);
+
                   $conn = new mysqli("localhost", "kmkelmo1", "vYV7v[66(kX9lD", "kmkelmo1_capstone_database");
 
                   // Check connection
@@ -122,6 +131,7 @@
                     echo "echo 1 ";
 
                     $result1 = $dbConn->query("SELECT ClientName FROM Client WHERE ClientName = '$clientvar'");
+                    //if client not found, add to Client table
                     if($result1->num_rows == 0) {
                         $stmtClient = $dbConn->prepare("INSERT INTO Client(ClientName) VALUES (?)");
                         $stmtClient->bind_param("s", $clientvar);
@@ -132,12 +142,13 @@
                         echo "echo 2 ";
                         echo $projIDrow;
                         echo $clientIDrow;
-
+                        // add new client porject association    
                         $stmtClient2 = $dbConn->prepare("INSERT INTO ProjectAndClient(ProjectID, ClientID) VALUES (?,?)");
                         $stmtClient2->bind_param("ss", $projIDrow["ProjectID"], $clientIDrow["ClientID"]);
                         $stmtClient2->execute();
                         $stmtClient2->close();
                         echo "echo 3 ";
+                    // if client already exists, update CLIENT and ProjectAndClient tables    
                     } else {
                         $clientID=$dbConn->query("SELECT ClientID FROM Client WHERE ClientName = '$clientvar'");
                         $clientIDrow = $clientID->fetch_assoc();
