@@ -122,14 +122,13 @@
             }
             //echo "client:" . $clientvar . " year:" . $yearvar . " title:" . $titlevar . " description:" . $descvar . " course:" . $coursevar
 
-            
+            //("UPDATE Project SET (ProjectName=?, ProjectDescription=?, Course=?, ProjectYear=? WHERE ProjectID=$ProjIDvar)");
             //check if client already exists, if not add new client to client table
-            if ($clientvar != null AND $yearvar != null AND $titlevar != null AND $descvar != null AND $coursevar != null) {
-                $stmtProj = $conn->prepare("UPDATE Project SET (ProjectName=?, ProjectDescription=?, Course=?, ProjectYear=? WHERE ProjectID=$ProjIDvar)");
-                $stmtProj->bind_param("ssss", $titlevar, $descvar, $coursevar, $yearvar);
-                $stmtProj->execute();
-                $stmtProj->close();
-
+            if (!empty($titlevar)) {
+                $stmt = $conn->prepare("UPDATE Project SET ProjectName = '".$titlevar."' WHERE ProjectID = '".$row["ProjectID"]."'");
+                $stmt->execute();
+                } 
+            
             //Get Client Table info
             $result1 = $conn->query("SELECT ClientName FROM Client WHERE ClientName = '$clientvar'");
             //if client not found, add to Client table
@@ -182,9 +181,7 @@
             }
             echo "</table>";
             
-            } else {
-                echo "Please fill in all Fields";
-            }
+            
             
         $userCheck->close();
         $dbConn->close();         
