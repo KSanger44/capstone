@@ -130,8 +130,7 @@
             SET CLIENT.cient = '$client'
             WHERE CLIENT.ProjectID = '$projectID'";
 
-            $updateKWsql = "DELETE FROM ProjectAndKeyword
-            WHERE ProjectAndKeyword.ProjectID = '$projectID'"
+            //$updateKWsql = "DELETE FROM ProjectAndKeyword WHERE ProjectAndKeyword.ProjectID = '$projectID'";
 
 
               if (mysqli_query($conn, $updateprojectsql)) {
@@ -145,12 +144,7 @@
               }   else {
                 echo "Error: " . $updateclientsql . "<br>" . mysqli_error($conn);
               }
-
-              if (mysqli_query($conn, $updateKWsql)) {
-                  echo "Project Table Updated successfully.";
-              }   else {
-                  echo "Error: " . $updateKWsql . "<br>" . mysqli_error($conn);
-              }  
+ 
             } else {
                 echo "Please fill in all Fields";
             }
