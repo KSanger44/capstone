@@ -118,21 +118,24 @@
           $desc = isset($_POST['desc']) ? $_POST['desc'] : "";
 
           if(isset($_POST['modproj'])){
+            if(($client != null AND $year != null AND $title != null AND $desc != null)){
 
             $updatesql = "UPDATE PROJECT
             SET PROJECT.projectyear = '$year', PROJECT.projectname = '$title', PROJECT.projectdescription = '$desc'
             WHERE PROJECT.ProjectID = '$projectID';
+
             UPDATE CLIENT
-            WHERE CLIENT.cient"
+            SET CLIENT.cient = '$client'
+            WHERE CLIENT.ProjectID = '$projectID'";
 
 
-          if (mysqli_query($conn, $updatesql)) {
-            echo "Status Updated successfully.";
-          } else {
-            echo "Error: " . $updatesql . "<br>" . mysqli_error($conn);
+            if (mysqli_query($conn, $updatesql)) {
+              echo "Status Updated successfully.";
+            } else {
+                echo "Error: " . $updatesql . "<br>" . mysqli_error($conn);
+              }
+            }
           }
-          }
-
 
 
 
