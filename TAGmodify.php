@@ -122,22 +122,37 @@
           if(isset($_POST['modproj'])){
             if(($client != null AND $year != null AND $title != null AND $desc != null)){
 
-            $updatesql = "UPDATE PROJECT
+            $updateprojectsql = "UPDATE PROJECT
             SET PROJECT.projectyear = '$year', PROJECT.projectname = '$title', PROJECT.projectdescription = '$desc'
-            WHERE PROJECT.ProjectID = '$projectID';
+            WHERE PROJECT.ProjectID = '$projectID'";
 
-            UPDATE CLIENT
+            $updateclientsql = "UPDATE CLIENT
             SET CLIENT.cient = '$client'
             WHERE CLIENT.ProjectID = '$projectID'";
 
+            $updateKWsql = "DELETE FROM ProjectAndKeyword
+            WHERE ProjectAndKeyword.ProjectID = '$projectID'"
 
-            if (mysqli_query($conn, $updatesql)) {
-              echo "Status Updated successfully.";
-            } else {
-                echo "Error: " . $updatesql . "<br>" . mysqli_error($conn);
+
+              if (mysqli_query($conn, $updateprojectsql)) {
+                echo "Project Table Updated successfully.";
+              }   else {
+                echo "Error: " . $updateprojectsql . "<br>" . mysqli_error($conn);
               }
+
+              if (mysqli_query($conn, $updateclientsql)) {
+                echo "Client Table Updated successfully.";
+              }   else {
+                echo "Error: " . $updateclientsql . "<br>" . mysqli_error($conn);
+              }
+
+              if (mysqli_query($conn, $updateKWsql)) {
+                  echo "Project Table Updated successfully.";
+              }   else {
+                  echo "Error: " . $updateKWsql . "<br>" . mysqli_error($conn);
+              }  
             } else {
-              echo "Please fill in all Fields";
+                echo "Please fill in all Fields";
             }
           }
 
